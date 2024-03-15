@@ -18,6 +18,16 @@ const register_user = async (req, res) => {
     }   
 }
 
+const profile = async (req, res) => { 
+    const [ user ] = req.user;
+    return res.json({
+        id: user.id,
+        nome: user.nome,
+        email: user.email
+    });
+}
+
 module.exports = {
-    register_user
+    register_user,
+    profile
 }
