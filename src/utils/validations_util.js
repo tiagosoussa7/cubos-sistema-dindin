@@ -16,8 +16,15 @@ async function compare_password(senha1, senha2) {
     return password_compare;
 }
 
+function response(nome) {
+    const partesDoNome = nome.toLowerCase().split(' ');
+    const new_response = partesDoNome.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+    return new_response;
+    }
+
 module.exports = {
     check_email,
     encrypt_password,
     compare_password,
+    response
 }
