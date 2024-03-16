@@ -1,6 +1,5 @@
 const knex = require('../connections/db_knex');
-const { insert_knex } = require('../database/transaction_knex');
-const { date } = require('../utils/validations_util');
+const { insert_knex, update_knex } = require('../database/transaction_knex');
 
 const list = async (req, res) => {
     const [ user ] = req.user;
@@ -33,6 +32,7 @@ const register = async (req, res) => {
         if (!category) return res.status(404).json({ mensagem: `Cadastro negado: a categoria (${categoria_id}) não existe.`});
         
         const [ transaction ] = await insert_knex(descricao, valor, data, categoria_id, tipo, user.id);
+        
         transaction.categoria_name = category.descricao;
 
         return res.status(201).json(transaction);
@@ -41,8 +41,30 @@ const register = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    const [ user ] = req.user;
+    const { id } = req.params;
+    const { descricao, valor, data, categoria_id, tipo } = req.body;
+
+    try {
+        const [ transaction ] = await knex('transacoes').where({ id: user.id, id: id }).select();
+        
+        if (!transaction) return res.status(404).json({ mensagem: `Atualização negada: a transação (${id}) não existe.`});
+
+        const category = await knex('categorias').select().where({ id: categoria_id}).first();
+        
+        if (!category) return res.status(404).json({ mensagem: `Atualização negada: a categoria (${categoria_id}) não existe.`});
+
+        await update_knex(descricao, valor, data, categoria_id, tipo, id);
+    
+        return res.status(204).send();
+    } catch (error) {
+        return res.status(500).json({ mensagem: `erro interno: ${error.message}`});
+    }
+}
 module.exports = {
     list,
     detail,
-    register
+    register,
+    update
 }

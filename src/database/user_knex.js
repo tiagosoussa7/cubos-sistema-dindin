@@ -13,8 +13,8 @@ async function insert_knex( nome, email, senha ) {
 
 async function update_knex(id, nome, email, senha) {
     await knex('usuarios').where({ id: id}).update({
-        nome: nome,
-        email: email,
+        nome,
+        email,
         senha: await encrypt_password(senha)
     })
 }
