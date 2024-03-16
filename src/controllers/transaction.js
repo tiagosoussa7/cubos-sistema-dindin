@@ -1,3 +1,4 @@
+const { number } = require('joi');
 const knex = require('../connections/db_knex');
 const { insert_knex, update_knex } = require('../database/transaction_knex');
 
@@ -82,10 +83,28 @@ const cancel = async (req, res) => {
     }
 }
 
+const extract = async (req, res) => {
+    const [ user ] = req.user;
+    const tipo1 = 'entrada', tipo2 = 'saída';
+
+    try {
+        const [ extract_entry ] = await knex('transacoes').select(knex.raw('SUM(valor) AS saldo')).where({usuario_id: user.id, tipo: tipo1 });
+        const [ extract_exit ] = await knex('transacoes').select(knex.raw('SUM(valor) AS saldo')).where({usuario_id: user.id, tipo: tipo2 });
+        
+        return res.json({
+            entrada: Number(extract_entry.saldo) ?? 0,
+            saída: Number(extract_exit.saldo) ?? 0
+        })
+    } catch (error) {
+        return res.status(500).json({ mensagem: `erro interno: ${error.message}`});
+    }
+}
+
 module.exports = {
     list,
     detail,
     register,
     update,
-    cancel
+    cancel,
+    extract
 }

@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { list, detail, register, update, cancel } = require('../controllers/transaction');
+const { list, detail, register, update, cancel, extract } = require('../controllers/transaction');
 const { body_validation } = require('../middleware/validation');
 const { schema_register, schema_update } = require('../schemas/transactions_schema');
 
@@ -8,6 +8,10 @@ const route_transaction = express();
 
 route_transaction.get('/transacao', 
     list
+);
+
+route_transaction.get('/transacao/extrato', 
+    extract
 );
 
 route_transaction.get('/transacao/:id', 
