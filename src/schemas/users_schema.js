@@ -38,7 +38,16 @@ const schema_update = joi.object({
     })
 });
 
+const schema_del = joi.object({
+    senha: joi.string().required().messages({
+        'any.required': 'Exclusão negada: o campo senha é obrigatório.',
+        'string.base': 'Exclusão negada: preencha corretamente o campo senha.',
+        'string.empty': 'Exclusão negada: o campo senha está vazio.',
+    })
+});
+
 module.exports = {
     schema_register,
-    schema_update
+    schema_update,
+    schema_del
 }

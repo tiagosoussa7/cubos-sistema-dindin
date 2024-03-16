@@ -19,7 +19,15 @@ async function update_knex(id, nome, email, senha) {
     })
 }
 
+async function del_knex(id) {
+    knex.transaction(async (trx) => {
+        await trx('transacoes').where({ usuario_id: id}).del();
+        await trx('usuarios').where({ id }).del();       
+    }); 
+}
+
 module.exports = {
     insert_knex,
-    update_knex
+    update_knex,
+    del_knex
 }

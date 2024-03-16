@@ -18,9 +18,15 @@ const detail = async (req, res) => {
     const [ user ] = req.user;
     const { id } = req.params;
 
-    const transaction = await knex('transacoes').where({ id: user.id, id: id }).select();
+    try {
+        const [ transaction ] = await knex('transacoes').where({ usuario_id: user.id, id: id }).select();
     
-    return res.json(transaction);
+        if (!transaction) return res.status(404).json({ mensagem: `Ação negada: a transação (${id}) não existe.`});  
+    
+        return res.json(transaction)
+    } catch (error) {
+        return res.status(500).json({ mensagem: `erro interno: ${error.message}`});
+    }
 }
 
 const register = async (req, res) => {

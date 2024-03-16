@@ -1,4 +1,4 @@
-const { insert_knex, update_knex } = require("../database/user_knex");
+const { insert_knex, update_knex, del_knex } = require("../database/user_knex");
 const { check_email, response, compare_password } = require("../utils/validations_util");
 
 const register = async (req, res) => {
@@ -48,8 +48,23 @@ const update = async (req, res) => {
     }
 }
 
+const del = async (req, res) => {
+    const { senha} = req.body;
+    const [ user ] = req.user;
+    
+    try {
+        if ( !await compare_password(senha, user.senha)) return res.status(403).json({mensagem: 'Exclusão negada: a senha fornecida é diferente da do usuário logado.'});
+        
+        await del_knex(user.id);
+
+        return res.status(200).json({mensagem: 'Exclusão efetivada.'})
+    } catch (error) {
+        return res.status(500).json({ mensagem: `erro interno: ${error.message}`});
+    }
+}
 module.exports = {
     register,
     profile,
-    update
+    update,
+    del
 }
