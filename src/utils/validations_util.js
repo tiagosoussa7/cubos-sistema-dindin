@@ -20,11 +20,16 @@ function response(nome) {
     const partesDoNome = nome.toLowerCase().split(' ');
     const new_response = partesDoNome.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
     return new_response;
-    }
+}
+
+function date(data) {
+    return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(data);
+  }
 
 module.exports = {
     check_email,
     encrypt_password,
     compare_password,
-    response
+    response,
+    date
 }
