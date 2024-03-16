@@ -1,8 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const route_user = require('./routes/user_routes');
-const route_login = require('./routes/login_route');
 
+const route_login = require('./routes/login_route');
+const route_user = require('./routes/user_routes');
+const route_category = require('./routes/category_routes');
 
 
 const app = express();
@@ -10,6 +11,7 @@ app.use(express.json());
 
 app.use(route_login);
 app.use(route_user);
+app.use(route_category)
 
 const port = process.env.PORT || 3000;
 
