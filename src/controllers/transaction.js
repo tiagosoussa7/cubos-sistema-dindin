@@ -62,9 +62,30 @@ const update = async (req, res) => {
         return res.status(500).json({ mensagem: `erro interno: ${error.message}`});
     }
 }
+
+const cancel = async (req, res) => {
+    const [ user ] = req.user;
+    const { id } = req.params;
+    
+    try {
+        const [ transaction ] = await knex('transacoes').where({ id: user.id, id: id }).select();
+        
+        if (!transaction) return res.status(404).json({ mensagem: `Exclusão negada: a transação (${id}) não existe.`});
+        
+        const transaction_del = await knex('transacoes').del().where({id});
+
+        if (!transaction_del) return res.status(500).json({ mensagem: `erro interno: Exclusão negada.`});
+
+        return res.status(204).send();
+    } catch (error) {
+        return res.status(500).json({ mensagem: `erro interno: ${error.message}`});
+    }
+}
+
 module.exports = {
     list,
     detail,
     register,
-    update
+    update,
+    cancel
 }
